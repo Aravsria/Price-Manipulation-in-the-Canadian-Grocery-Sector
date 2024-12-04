@@ -20,4 +20,4 @@ The repo is structured as:
 
 
 ## 💬 LLM Usage
-Aspects of the project (albeit negligible) involved the use of ChatGPT 4.0 for ideas generation. This is documented in other/llm_usage
+Aspects of the project (albeit negligible) involved the use of ChatGPT 4.0 for ideas generation. This is documented in other/llm_usage/usage.txt
