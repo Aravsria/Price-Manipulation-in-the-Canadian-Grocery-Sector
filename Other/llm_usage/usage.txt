@@ -1,0 +1,188 @@
+All transcripts are from Chat GPT 4.0
+
+Instruction 1: Drop unnecessary columns in the raw_df
+The first step was to remove any unnecessary columns from the dataset, such as the 'price_per_unit', which was assumed not to be needed for this analysis.
+
+Code:
+
+python
+Copy code
+# 1. Drop unnecessary columns in the raw_df
+raw_df_cleaned = raw_df.drop(columns=['price_per_unit'])  # Assuming 'price_per_unit' is not needed for this analysis
+
+Instruction 2: Handle missing values in 'current_price' and 'old_price' columns
+For missing values in the 'current_price' and 'old_price' columns, the forward-fill method (ffill) was applied to fill these missing values based on the previous valid entry.
+
+Code:
+
+python
+Copy code
+# 2. Handle missing values in 'current_price' and 'old_price' columns
+raw_df_cleaned['current_price'].fillna(method='ffill', inplace=True)  # Forward fill missing current prices
+raw_df_cleaned['old_price'].fillna(method='ffill', inplace=True)  # Forward fill missing old prices
+
+Instruction 3: Convert 'nowtime' to datetime
+The 'nowtime' column was converted to a datetime format to facilitate time-based analysis.
+
+Code:
+
+python
+Copy code
+# 3. Convert 'nowtime' to datetime
+raw_df_cleaned['nowtime'] = pd.to_datetime(raw_df_cleaned['nowtime'])
+
+
+Instruction 4: Ensure 'current_price' and 'old_price' are numeric
+The 'current_price' and 'old_price' columns were converted to numeric data types. Any values that couldn’t be converted were set to NaN using the errors='coerce' argument.
+
+Code:
+
+python
+Copy code
+# 4. Ensure 'current_price' and 'old_price' are numeric
+raw_df_cleaned['current_price'] = pd.to_numeric(raw_df_cleaned['current_price'], errors='coerce')
+raw_df_cleaned['old_price'] = pd.to_numeric(raw_df_cleaned['old_price'], errors='coerce')
+
+
+Instruction 5: Merge raw_df with product_df
+The cleaned dataset (raw_df_cleaned) was merged with product_df based on the matching 'product_id' from raw_df and 'id' from product_df to enrich the dataset with product-related information.
+
+Code:
+
+python
+Copy code
+# Merge with product_df on 'product_id' from raw_df and 'id' from product_df
+merged_df = pd.merge(raw_df_cleaned, product_df, left_on='product_id', right_on='id', how='left')
+
+
+Instruction 6: Drop irrelevant columns in the merged dataframe
+Irrelevant columns such as 'id', 'concatted', 'brand', 'detail_url', 'sku', and 'upc' were dropped from the merged dataset to keep the analysis focused on the most useful data.
+
+Code:
+
+python
+Copy code
+# 5. Drop irrelevant columns in the merged dataframe (e.g., 'id', 'concatted', 'brand', 'detail_url', 'sku', 'upc')
+merged_df_cleaned = merged_df.drop(columns=['id', 'concatted', 'brand', 'detail_url', 'sku', 'upc'])
+
+
+Instruction 7: Drop rows with missing 'current_price' or 'product_name'
+Rows with missing values in critical columns such as 'current_price' and 'product_name' were removed to ensure data integrity and avoid incomplete records.
+
+Code:
+
+python
+Copy code
+# 6. Drop rows with missing 'current_price' or 'product_name'
+merged_df_cleaned = merged_df_cleaned.dropna(subset=['current_price', 'product_name'])
+
+
+Instruction 8: Sort the data by 'product_id' and 'nowtime'
+The dataset was sorted by 'product_id' and 'nowtime' to ensure that data is organized chronologically within each product group.
+
+Code:
+
+python
+Copy code
+# 7. Sort the data by 'product_id' and 'nowtime'
+merged_df_cleaned.sort_values(by=['product_id', 'nowtime'], ascending=[True, False], inplace=True)
+
+
+Instruction 9: Create columns to track price trends before and after sales
+New columns were created to track the price changes before and after sales for each product using the .shift() method to reference previous and next price values.
+
+Code:
+
+python
+Copy code
+# 8. Create columns to track price trends before and after sales
+merged_df_cleaned['pre_sale_price'] = merged_df_cleaned.groupby('product_id')['current_price'].shift(-1)
+merged_df_cleaned['post_sale_price'] = merged_df_cleaned.groupby('product_id')['current_price'].shift(1)
+
+
+Instruction 10: Filter the rows where 'other' column indicates 'SALE'
+The dataset was filtered to include only the rows where the 'other' column indicates a sale, creating a subset of the data specifically focused on sales.
+
+Code:
+
+python
+Copy code
+# 9. Filter the rows where 'other' column indicates 'SALE'
+sale_df = merged_df_cleaned[merged_df_cleaned['other'] == 'SALE']
+Instruction 11: Set 'nowtime' as the index for resampling
+The 'nowtime' column was set as the index to facilitate time-based resampling for aggregating the data at a monthly frequency.
+
+Code:
+
+python
+Copy code
+# Set 'nowtime' column as the index for resampling
+merged_df_cleaned['nowtime'] = pd.to_datetime(merged_df_cleaned['nowtime'])
+merged_df_cleaned.set_index('nowtime', inplace=True)
+Instruction 12: Resample data monthly for time series analysis
+The data was resampled monthly using the 'nowtime' index, and the mean of the numeric columns, including 'current_price', was calculated for each month.
+
+Code:
+
+python
+Copy code
+# 1. Monthly Time Series for Current Price (corrected for resampling with 'nowtime' as index)
+numeric_columns = merged_df_cleaned.select_dtypes(include=['number']).columns
+monthly_data = merged_df_cleaned[numeric_columns].resample('M').mean()
+
+# Plot Monthly Average Current Price
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=monthly_data, x=monthly_data.index, y='current_price')
+plt.title('Monthly Average Current Price')
+plt.xlabel('Month')
+plt.ylabel('Average Price')
+plt.show()
+Instruction 13: Extract year and month and group by 'year_month'
+The 'nowtime' column was used to extract the year and month for further grouping and aggregating of the data based on monthly price trends.
+
+Code:
+
+python
+Copy code
+import matplotlib.pyplot as plt
+
+# Step 1: Convert 'nowtime' to datetime format if not already
+merged_df_cleaned['nowtime'] = pd.to_datetime(merged_df_cleaned['nowtime'])
+
+# Step 2: Extract year and month from 'nowtime' column
+merged_df_cleaned['year_month'] = merged_df_cleaned['nowtime'].dt.to_period('M')
+Instruction 14: Group by 'year_month' and calculate the mean price before and after sales
+The dataset was grouped by the extracted 'year_month' column, and the average prices before and after sales were calculated.
+
+Code:
+
+python
+Copy code
+# Step 3: Group by year_month and calculate the mean price before and after sales
+monthly_prices = merged_df_cleaned.groupby('year_month').agg({
+    'price_change_before_sale': 'mean',
+    'price_change_after_sale': 'mean'
+}).reset_index()
+Instruction 15: Plot the time series for prices before and after sales
+A line plot was created to visualize the price trends before and after sales, with separate lines for each trend.
+
+Code:
+
+python
+Copy code
+# Step 4: Plotting the time series for prices before and after sale
+plt.figure(figsize=(10, 6))
+plt.plot(monthly_prices['year_month'].astype(str), monthly_prices['price_change_before_sale'], label='Price Before Sale', color='blue', marker='o')
+plt.plot(monthly_prices['year_month'].astype(str), monthly_prices['price_change_after_sale'], label='Price After Sale', color='red', marker='o')
+
+# Step 5: Formatting the plot
+plt.title('Price Trends Before and After Sales (Monthly)', fontsize=14)
+plt.xlabel('Month', fontsize=12)
+plt.ylabel('Price ($)', fontsize=12)
+plt.xticks(rotation=45)
+plt.legend()
+plt.grid(True)
+
+# Step 6: Show the plot
+plt.tight_layout()
+plt.show()
