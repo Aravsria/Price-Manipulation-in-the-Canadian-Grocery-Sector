@@ -18,6 +18,7 @@ The repo is structured as:
 -   `paper` contains the paper
 -   `scripts` contains the python scripts used to work with the dataset and perform various tasks
 
+* A Google Drive link to the data folder has been placed in the '/data' for the time being since all files are over 25MB and cannot be uploaded directly to GitHub
 
 ## 💬 LLM Usage
 Aspects of the project (albeit negligible) involved the use of ChatGPT 4.0 for ideas generation. This is documented in other/llm_usage/usage.txt
