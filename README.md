@@ -11,7 +11,7 @@ The dataset used in this project is publicly available and contains data on groc
 
 The repo is structured as:
 
--   `simulated_data.csv` contains the simulated data
+-   `00-simulated_data.parquet` contains the simulated data
 -   `raw_data.csv` contains the raw data as obtained from Jacobfilipp.com/hammer/
 -   `cleaned_price_data.parquet` contains the cleaned analysis dataset that was constructed
 -   `models` contains a fitted model
