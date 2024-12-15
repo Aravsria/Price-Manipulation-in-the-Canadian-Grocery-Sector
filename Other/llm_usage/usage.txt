@@ -904,4 +904,113 @@ This approach emphasizes the steps you took, the methods you applied, and the ju
 
 Instruction 19:
 
+User: heres my code
+
+# 3. Correlation Heatmap for Numeric Variables
+numeric_data = merged_df_cleaned[['current_price', 'old_price', 'pre_sale_price', 'post_sale_price', 
+                                 'price_change_before_sale', 'price_change_after_sale']]
+correlation_matrix = numeric_data.corr()
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5)
+plt.title('Correlation Heatmap for Numeric Variables')
+plt.show()
+
+and I'm getting this error:
+
+KeyError                                  Traceback (most recent call last)
+Cell In[35], line 2
+      1 # 3. Correlation Heatmap for Numeric Variables
+----> 2 numeric_data = merged_df_cleaned[['current_price', 'old_price', 'pre_sale_price', 'post_sale_price', 
+      3                                  'price_change_before_sale', 'price_change_after_sale']]
+      4 correlation_matrix = numeric_data.corr()
+      6 plt.figure(figsize=(8, 6))
+
+File /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/frame.py:4108, in DataFrame.__getitem__(self, key)
+   4106     if is_iterator(key):
+   4107         key = list(key)
+-> 4108     indexer = self.columns._get_indexer_strict(key, "columns")[1]
+   4110 # take() does not accept boolean indexers
+   4111 if getattr(indexer, "dtype", None) == bool:
+
+File /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/indexes/base.py:6200, in Index._get_indexer_strict(self, key, axis_name)
+   6197 else:
+   6198     keyarr, indexer, new_indexer = self._reindex_non_unique(keyarr)
+-> 6200 self._raise_if_missing(keyarr, indexer, axis_name)
+   6202 keyarr = self.take(indexer)
+   6203 if isinstance(key, Index):
+   6204     # GH 42790 - Preserve name from an Index
+
+File /Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/pandas/core/indexes/base.py:6252, in Index._raise_if_missing(self, key, indexer, axis_name)
+   6249     raise KeyError(f"None of [{key}] are in the [{axis_name}]")
+   6251 not_found = list(ensure_index(key)[missing_mask.nonzero()[0]].unique())
+-> 6252 raise KeyError(f"{not_found} not in index")
+
+KeyError: "['price_change_before_sale', 'price_change_after_sale'] not in index"
+
+ChatGPT:
+
+The error indicates that the columns 'price_change_before_sale' and 'price_change_after_sale' do not exist in your merged_df_cleaned DataFrame. Here's how you can debug and fix the issue:
+
+1. Verify Columns in merged_df_cleaned
+Before selecting the columns, check the actual column names in the DataFrame:
+
+python
+Copy code
+print(merged_df_cleaned.columns)
+Look for:
+
+Typographical errors in column names.
+Whether the missing columns ('price_change_before_sale' and 'price_change_after_sale') are absent.
+2. Ensure the Missing Columns Are Created
+The missing columns ('price_change_before_sale' and 'price_change_after_sale') seem to be derived metrics based on your earlier code. If they are not yet created, you need to calculate them:
+
+Add price_change_before_sale and price_change_after_sale:
+python
+Copy code
+# Create 'price_change_before_sale' and 'price_change_after_sale'
+merged_df_cleaned['price_change_before_sale'] = merged_df_cleaned['current_price'] - merged_df_cleaned['pre_sale_price']
+merged_df_cleaned['price_change_after_sale'] = merged_df_cleaned['post_sale_price'] - merged_df_cleaned['current_price']
+These formulas assume that:
+
+pre_sale_price is the price before a sale.
+post_sale_price is the price after a sale.
+current_price is the sale price.
+3. Check for Missing or Null Values
+Sometimes columns exist but contain missing values, leading to issues during calculations. Verify this:
+
+python
+Copy code
+print(merged_df_cleaned[['price_change_before_sale', 'price_change_after_sale']].head())
+Handle missing data, if necessary:
+
+python
+Copy code
+merged_df_cleaned[['price_change_before_sale', 'price_change_after_sale']] = merged_df_cleaned[['price_change_before_sale', 'price_change_after_sale']].fillna(0)
+4. Retry the Heatmap Code
+Once the columns are verified or created, re-run the correlation and heatmap code:
+
+python
+Copy code
+numeric_data = merged_df_cleaned[['current_price', 'old_price', 'pre_sale_price', 'post_sale_price', 
+                                  'price_change_before_sale', 'price_change_after_sale']]
+correlation_matrix = numeric_data.corr()
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=0.5)
+plt.title('Correlation Heatmap for Numeric Variables')
+plt.show()
+5. Final Debugging Step
+If the issue persists, ensure:
+
+All required columns are spelled correctly.
+pre_sale_price and post_sale_price are correctly calculated or exist in your DataFrame.
+To create them, use logic similar to your earlier sale_df setup:
+
+python
+Copy code
+# Calculate 'pre_sale_price' and 'post_sale_price' if missing
+merged_df_cleaned['pre_sale_price'] = merged_df_cleaned.groupby('product_id')['current_price'].shift(1)
+merged_df_cleaned['post_sale_price'] = merged_df_cleaned.groupby('product_id')['current_price'].shift(-1)
+
 
