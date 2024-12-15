@@ -287,6 +287,8 @@ plt.show()
 
 shows the correlations among the numeric variables in the dataset. This visualization allows us to visually see relationships between pricing variables.
 
+\newpage
+
 @fig-heatmap The current price shows a strong positive correlation with both the pre-sale price and the post-sale price (values of 0.98 for both). This indicates that the prices are closely related over time, suggesting consistency in pricing practices, even around sale events. The correlation between current price and old price is moderate (0.57), suggesting some dependency but also reflecting a potential for price adjustments or manipulations before sales. There is a significant negative correlation (-0.49) between price change before sale and price change after sale. This suggests that a large price drop before a sale is often followed by a proportional price increase after the sale, potentially indicating pricing strategies aimed at creating the illusion of larger discounts.
 
 \newpage
