@@ -417,3 +417,491 @@ If you prefer modular code, go for Option 1 (Shared Script).
 For saving variables between sessions, use Option 3 (Save to Disk).
 Would you like detailed steps for any of these approaches? Let me know!
 
+
+Instruction 18:
+
+User: here's my model for the data analysis done in the paper. Write a paragraph for the part of the paper that talks about the model set up and justification.
+
+Chat GPT:
+
+Based on the code you provided, here’s a paragraph describing the model setup and its justification for inclusion in your paper:
+
+Model Setup and Justification
+The analytical model implemented in this study is designed to evaluate pricing behaviors surrounding sales events. Using a cleaned dataset of product prices, the model separates records into pre-sale and post-sale periods for statistical and comparative analysis. Key steps include generating price_before_sale and price_after_sale variables through grouped time-aligned shifts, enabling precise tracking of price changes. To validate the assumptions of normality in price distributions, the Shapiro-Wilk test was applied, confirming the non-parametric nature of the data. Consequently, the Wilcoxon signed-rank test was utilized to compare pre- and post-sale prices, a robust non-parametric test suitable for paired data with non-normal distributions. The analysis further incorporated correlation measures to quantify the relationship between price changes before and after sales. Finally, a temporal analysis aggregated monthly price changes to visualize trends over time. These steps collectively ensure a rigorous examination of price manipulation behaviors, leveraging both inferential and exploratory statistical techniques to identify patterns and statistically significant differences in pricing.
+
+This paragraph summarizes the purpose and methodology of the model, highlighting the justification for statistical methods and the workflow structure. Let me know if you need refinements or additional detail!
+
+
+
+Instruction 19:
+
+User: what do I include for the model set up, are there any relevant equations i should include in latex
+
+ChatGPT: For your paper, the model setup section should describe the statistical methods you used to analyze your data, justify why they were chosen, and, where applicable, include relevant mathematical equations in LaTeX. Based on your code, here are the key components to include:
+
+1. Description of Data Processing
+Focus: Highlight how you structured your data to prepare it for analysis.
+Include:
+Filtering and Grouping: Explain that you filtered sales-related rows, sorted by product_id and nowtime, and calculated price_before_sale and price_after_sale as necessary columns for comparisons.
+Reason: To establish a clear "before-and-after" structure for statistical testing.
+2. Shapiro-Wilk Test for Normality
+Focus: Describe how you tested whether the distributions of price_before_sale and price_after_sale are normally distributed.
+
+Equation (Optional, for Normality Test Statistic): The Shapiro-Wilk test statistic 
+𝑊
+W can be included as:
+
+𝑊
+=
+(
+∑
+𝑖
+=
+1
+𝑛
+𝑎
+𝑖
+𝑥
+(
+𝑖
+)
+)
+2
+∑
+𝑖
+=
+1
+𝑛
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+2
+W= 
+∑ 
+i=1
+n
+​
+ (x 
+i
+​
+ − 
+x
+ˉ
+ ) 
+2
+ 
+(∑ 
+i=1
+n
+​
+ a 
+i
+​
+ x 
+(i)
+​
+ ) 
+2
+ 
+​
+ 
+where:
+
+𝑥
+(
+𝑖
+)
+x 
+(i)
+​
+ : Ordered sample values.
+𝑎
+𝑖
+a 
+i
+​
+ : Constants derived from the sample size.
+𝑥
+ˉ
+x
+ˉ
+ : Sample mean.
+Result Interpretation:
+
+𝑝
+p-value 
+<
+0.05
+<0.05: Data is not normally distributed.
+3. Wilcoxon Signed-Rank Test for Non-Normal Data
+Focus: Explain why you used this non-parametric test (data is not normal) to compare price_before_sale and price_after_sale.
+Equation: The Wilcoxon signed-rank test statistic is computed as:
+𝑊
+=
+∑
+𝑖
+=
+1
+𝑛
+𝑅
+𝑖
++
+W= 
+i=1
+∑
+n
+​
+ R 
+i
++
+​
+ 
+where:
+𝑅
+𝑖
++
+R 
+i
++
+​
+ : Positive rank sums of differences between paired samples.
+Result Interpretation:
+𝐻
+0
+H 
+0
+​
+ : The median difference between paired samples is zero.
+𝑝
+p-value 
+<
+0.05
+<0.05: Reject 
+𝐻
+0
+H 
+0
+​
+ , indicating a significant difference.
+4. Correlation Analysis
+Focus: Describe how you assessed the relationship between price_before_sale and price_after_sale using Pearson correlation.
+Equation: Pearson correlation coefficient 
+𝑟
+r:
+𝑟
+=
+∑
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+(
+𝑦
+𝑖
+−
+𝑦
+ˉ
+)
+∑
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+2
+∑
+(
+𝑦
+𝑖
+−
+𝑦
+ˉ
+)
+2
+r= 
+∑(x 
+i
+​
+ − 
+x
+ˉ
+ ) 
+2
+ ∑(y 
+i
+​
+ − 
+y
+ˉ
+​
+ ) 
+2
+ 
+​
+ 
+∑(x 
+i
+​
+ − 
+x
+ˉ
+ )(y 
+i
+​
+ − 
+y
+ˉ
+​
+ )
+​
+ 
+Result Interpretation:
+𝑟
+∈
+[
+−
+1
+,
+1
+]
+r∈[−1,1]: Measures linear relationship strength (positive or negative).
+∣
+𝑟
+∣
+≈
+0
+∣r∣≈0: No linear relationship.
+5. Time Series Analysis
+Focus: Explain how you aggregated monthly averages of price changes and visualized the trends.
+Equations (Optional): Monthly averages can be expressed as:
+𝑥
+ˉ
+month
+=
+∑
+𝑖
+=
+1
+𝑛
+𝑥
+𝑖
+𝑛
+x
+ˉ
+  
+month
+​
+ = 
+n
+∑ 
+i=1
+n
+​
+ x 
+i
+​
+ 
+​
+ 
+Where 
+𝑥
+𝑖
+x 
+i
+​
+ : Individual price changes within a month.
+Example Model Setup Paragraph
+Here’s a draft for the model setup section:
+
+To examine price behavior before and after sales, the dataset was structured to isolate sale events and compute corresponding price differences. Each sale event was identified by filtering rows where the sale indicator was active and sorting by product_id and nowtime. This enabled the computation of two key variables: price_before_sale and price_after_sale, derived by shifting prices relative to the chronological order of each product.
+
+Statistical analysis began with a Shapiro-Wilk test to determine if price_before_sale and price_after_sale followed a normal distribution:
+
+𝑊
+=
+(
+∑
+𝑖
+=
+1
+𝑛
+𝑎
+𝑖
+𝑥
+(
+𝑖
+)
+)
+2
+∑
+𝑖
+=
+1
+𝑛
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+2
+.
+W= 
+∑ 
+i=1
+n
+​
+ (x 
+i
+​
+ − 
+x
+ˉ
+ ) 
+2
+ 
+(∑ 
+i=1
+n
+​
+ a 
+i
+​
+ x 
+(i)
+​
+ ) 
+2
+ 
+​
+ .
+Results revealed non-normality (
+𝑝
+<
+0.05
+p<0.05), necessitating the use of the Wilcoxon signed-rank test:
+
+𝑊
+=
+∑
+𝑖
+=
+1
+𝑛
+𝑅
+𝑖
++
+,
+W= 
+i=1
+∑
+n
+​
+ R 
+i
++
+​
+ ,
+which evaluates the median difference between paired samples. The test concluded that prices before and after sales exhibit a statistically significant difference (
+𝑝
+<
+0.05
+p<0.05).
+
+To assess linear relationships, Pearson correlation was used to compare price changes before and after sales:
+
+𝑟
+=
+∑
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+(
+𝑦
+𝑖
+−
+𝑦
+ˉ
+)
+∑
+(
+𝑥
+𝑖
+−
+𝑥
+ˉ
+)
+2
+∑
+(
+𝑦
+𝑖
+−
+𝑦
+ˉ
+)
+2
+,
+r= 
+∑(x 
+i
+​
+ − 
+x
+ˉ
+ ) 
+2
+ ∑(y 
+i
+​
+ − 
+y
+ˉ
+​
+ ) 
+2
+ 
+​
+ 
+∑(x 
+i
+​
+ − 
+x
+ˉ
+ )(y 
+i
+​
+ − 
+y
+ˉ
+​
+ )
+​
+ ,
+indicating a weak positive correlation (
+𝑟
+=
+0.024
+r=0.024). Finally, monthly averages of price changes were computed to visualize trends over time, highlighting seasonal variations and potential pricing strategies.
+
+This approach emphasizes the steps you took, the methods you applied, and the justifications behind your choices. Let me know if you'd like to refine this further!
+
+
+Instruction 19:
+
+
