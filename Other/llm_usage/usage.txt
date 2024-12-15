@@ -317,3 +317,103 @@ However, for bar charts, aggregation is typically more appropriate.
 These changes should resolve the error and allow you to generate your bar charts. Let me know if you encounter further issues!
 
 
+
+Instruction 17:
+
+User: this is what my working directory looks like. When I run EDA.ipynb I get a bunch of variables stored in my jupyter variables but they don't carry over to quarto. I don't want to have to paste in all my scripts into quarto, I only want to include the code chunks for the plotting code. What shall I do, is there a way to store the variables universally in VS Code?
+
+Chat GPT: 
+
+In your setup, you want variables defined in your Jupyter Notebook (EDA.ipynb) to persist and be accessible within your Quarto document without duplicating the code. Here’s how to achieve this in VS Code while keeping your workspace organized:
+
+Option 1: Use a Shared Python Script
+Save Variables to a Script:
+
+Extract the reusable parts of your notebook (e.g., data loading, variable definitions, cleaning) into a Python script (shared.py) that can be imported into both your notebook and Quarto document.
+For example, create a shared.py file in the scripts folder:
+
+python
+Copy code
+import pandas as pd
+
+# Load and clean data
+merged_df_cleaned = pd.read_csv('../Data/cleaned_data.csv')
+vendor_avg_prices = merged_df_cleaned.groupby('vendor', as_index=False).agg({
+    'current_price': 'mean',
+    'old_price': 'mean'
+})
+Import the Script in Quarto:
+
+In your Quarto document, load the shared variables using an import:
+python
+Copy code
+#| echo: false
+from scripts.shared import vendor_avg_prices
+Import the Script in Jupyter Notebook:
+
+Use the same import in EDA.ipynb:
+python
+Copy code
+from scripts.shared import merged_df_cleaned, vendor_avg_prices
+By organizing shared variables into shared.py, you avoid duplicating the logic.
+
+Option 2: Use Jupyter Kernel for Both Quarto and Notebook
+Quarto supports running code chunks directly using the same Jupyter kernel as your notebook. This way, you can execute code in your notebook and use the same state in Quarto:
+
+Run the Notebook Kernel in Quarto:
+
+In your Quarto document, specify the kernel in the YAML header:
+yaml
+Copy code
+---
+title: "Price Manipulation Analysis"
+format: html
+jupyter: python3
+---
+Execute Both in the Same Session:
+
+Ensure that your Quarto document is opened in the same Python environment as your Jupyter Notebook (you can confirm this by running sys.executable in both).
+Run Code in Notebook First:
+
+Execute the relevant cells in your notebook (EDA.ipynb) to set up variables.
+Leverage Variables in Quarto:
+
+Your Quarto code chunks can now access the variables from the shared Jupyter kernel:
+python
+Copy code
+#| echo: false
+print(vendor_avg_prices)
+Option 3: Save Variables to Disk
+If you need a more universal solution, save variables to disk (e.g., as a .pkl file) and load them wherever needed:
+
+Save Data in Notebook:
+
+python
+Copy code
+import pickle
+
+# Save variables to a file
+with open('../Data/variables.pkl', 'wb') as f:
+    pickle.dump({'merged_df_cleaned': merged_df_cleaned, 'vendor_avg_prices': vendor_avg_prices}, f)
+Load Variables in Quarto:
+
+python
+Copy code
+#| echo: false
+import pickle
+
+with open('../Data/variables.pkl', 'rb') as f:
+    data = pickle.load(f)
+
+merged_df_cleaned = data['merged_df_cleaned']
+vendor_avg_prices = data['vendor_avg_prices']
+This allows you to share variables without duplicating code.
+
+Recommendation
+The best approach depends on your workflow:
+
+If you want live updates, use Option 2 (Jupyter Kernel).
+If you prefer modular code, go for Option 1 (Shared Script).
+For saving variables between sessions, use Option 3 (Save to Disk).
+Would you like detailed steps for any of these approaches? Let me know!
+
