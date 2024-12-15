@@ -23,3 +23,6 @@ The repo is structured as:
 
 ## 💬 LLM Usage
 Aspects of the project (albeit negligible) involved the use of ChatGPT 4.0 for ideas generation. This is documented in other/llm_usage/usage.txt
+
+## Help
+Certain scripts may not run as expected in Visual Studio Code if the necessary extensions and packages are not installed. To overcome potential errors, use CMD/ctrl + Shift + X to browse the extensions marketplace, search for and install Python, Quarto, R, Jupyter. Certain Python packages may need to be installed using the terminal. To do so, paste: "python3 -m pip install pandas numpy matplotlib seaborn" into the terminal.
