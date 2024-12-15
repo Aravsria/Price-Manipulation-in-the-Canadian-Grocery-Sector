@@ -4,7 +4,7 @@
 
 This project analyses price manipulation in the Canadian grocery sector by examining price trends before and after sales. The analysis investigates whether prices are artificially inflated just before a sale, only to be reduced back to normal afterward. The study uses a combination of data wrangling, statistical analysis, and visualisation to uncover patterns in grocery prices.
 
-The dataset used in this project is publicly available and contains data on grocery prices, sale periods, and product information. The analysis was conducted using Python and various data science libraries such as Pandas, NumPy, and SciPy. Certain data files are too large to be made available on GitHub, please visit the following link to access them: https://drive.google.com/drive/folders/1-i4Q9cEgtIJILTofSd93w5-B2fQLRpaz?usp=drive_link
+The dataset used in this project is publicly available and contains data on grocery prices, sale periods, and product information. The analysis was conducted using Python and various data science libraries such as Pandas, NumPy, and SciPy. Certain data files are too large to be made available on GitHub, please visit the following link to access them: https://drive.google.com/drive/folders/1-i4Q9cEgtIJILTofSd93w5-B2fQLRpaz?usp=drive_link . Download the files and place them into a folder called 'Data' within the main project folder.
 
 
 ## 📂 File Structure
